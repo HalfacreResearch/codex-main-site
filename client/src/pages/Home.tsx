@@ -27,7 +27,7 @@ import {
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-hero-bg-eDys29FCnuSoc3MeAVdx47.webp";
 const STRATEGY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-strategy-bg-EApfaQxUnLV4mqEy3KBvqL.webp";
 const SECURITY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-security-bg-JfextvZ9ocCiU5a6eEATHx.webp";
-const FOUNDER_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/matt-headshot_e87a748d.png";
+const FOUNDER_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663096452459/CmqeCOjCelCcyIJP.png";
 
 // ─── BTC orange token ─────────────────────────────────────────
 const ORANGE = "oklch(0.72 0.17 55)";
