@@ -1,25 +1,1072 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+/* =============================================================
+   DESIGN: Dark Luxury — #0A0A0A bg, #C9A84C gold, Playfair + Inter
+   Sections: Hero → Stats Marquee → Opportunity → Strategy →
+             Platform → Performance → Founder → Security →
+             Newsletter → Contact → Footer
+   ============================================================= */
+import { useEffect, useRef, useState } from "react";
+import Navbar from "@/components/Navbar";
+import { useLiveStats } from "@/hooks/useLiveStats";
+import {
+  ArrowRight,
+  Shield,
+  TrendingUp,
+  Cpu,
+  BarChart3,
+  Lock,
+  Users,
+  ChevronDown,
+  ExternalLink,
+} from "lucide-react";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Best Practices, Design Guide and Common Pitfalls
- */
+// ─── Image CDN URLs ───────────────────────────────────────────
+const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-hero-bg-eDys29FCnuSoc3MeAVdx47.webp";
+const STRATEGY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-strategy-bg-EApfaQxUnLV4mqEy3KBvqL.webp";
+const SECURITY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-security-bg-JfextvZ9ocCiU5a6eEATHx.webp";
+const FOUNDER_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-founder-4BnA6camC7FF4rMgcuScSU.webp";
+
+// ─── Helpers ─────────────────────────────────────────────────
+function formatPrice(n: number | null) {
+  if (n === null) return "—";
+  return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+function formatChange(n: number | null) {
+  if (n === null) return null;
+  const sign = n >= 0 ? "+" : "";
+  return `${sign}${n.toFixed(2)}%`;
+}
+
+// ─── Animated counter ────────────────────────────────────────
+function useCountUp(target: number, duration = 1800, trigger: boolean) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!trigger) return;
+    const start = performance.now();
+    const raf = (ts: number) => {
+      const progress = Math.min((ts - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(ease * target));
+      if (progress < 1) requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+  }, [target, duration, trigger]);
+  return value;
+}
+
+// ─── Intersection observer hook ──────────────────────────────
+function useInView(threshold = 0.2) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return { ref, inView };
+}
+
+// ─── Marquee items ───────────────────────────────────────────
+const MARQUEE_ITEMS = [
+  "24 YEARS INVESTMENT EXPERIENCE",
+  "$100K MINIMUM INVESTMENT",
+  "0 LEVERAGE OR DERIVATIVES",
+  "100% BITCOIN FOCUSED",
+  "18,716% BTC 10-YEAR RETURN",
+  "75,303 HISTORICAL CANDLES ANALYZED",
+  "30+ LIQUIDITY VENUES VIA SFOX",
+  "SAFE QUALIFIED CUSTODIAN TRUST",
+  "69-YEAR FAMILY LEGACY IN FINANCIAL MARKETS",
+  "111 QUANTITATIVE FACTORS",
+];
+
+// ─── Performance data (backtested) ───────────────────────────
+const PERF_DATA = [
+  { coin: "SOL/BTC", factor: "RSI 14", btcReturn: "3.57", stopType: "Trail L", periods: "2020–2026" },
+  { coin: "SOL/BTC", factor: "Change 7D", btcReturn: "3.55", stopType: "Trail L", periods: "2020–2026" },
+  { coin: "ETH/BTC", factor: "RSI 14", btcReturn: "2.84", stopType: "Trail M", periods: "2017–2026" },
+  { coin: "XRP/BTC", factor: "Momentum 30D", btcReturn: "2.61", stopType: "Trail L", periods: "2017–2026" },
+  { coin: "LINK/BTC", factor: "RSI 14", btcReturn: "2.43", stopType: "Trail M", periods: "2019–2026" },
+];
+
+// ─── Main component ──────────────────────────────────────────
 export default function Home() {
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const stats = useLiveStats();
+  const { ref: perfRef, inView: perfInView } = useInView();
+  const { ref: statsRef, inView: statsInView } = useInView();
+
+  const btcReturn = useCountUp(18716, 2000, statsInView);
+  const candles = useCountUp(75303, 2000, statsInView);
+  const factors = useCountUp(111, 1200, statsInView);
+  const years = useCountUp(24, 1000, statsInView);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+      <Navbar />
+
+      {/* ── HERO ─────────────────────────────────────────────── */}
+      <section
+        className="relative min-h-screen flex items-center overflow-hidden"
+        style={{ paddingTop: "5rem" }}
+      >
+        {/* Background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${HERO_BG})`, opacity: 0.45 }}
+        />
+        {/* Gradient overlay — left side darker for text legibility */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(105deg, rgba(10,10,10,0.92) 45%, rgba(10,10,10,0.35) 100%)",
+          }}
+        />
+
+        {/* Live BTC ticker — top right */}
+        <div
+          className="absolute top-20 right-6 lg:right-12 flex flex-col items-end gap-1 z-10"
+          style={{ opacity: stats.loading ? 0.4 : 1 }}
+        >
+          <span className="section-label">BTC / USD</span>
+          <span
+            className="font-bold tabular-nums"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: "clamp(1.4rem, 3vw, 2rem)",
+              color: "oklch(0.73 0.12 75)",
+            }}
+          >
+            {formatPrice(stats.btcPrice)}
+          </span>
+          {stats.btcChange24h !== null && (
+            <span
+              className="text-xs font-semibold tabular-nums"
+              style={{
+                color: stats.btcChange24h >= 0 ? "#4ade80" : "#f87171",
+              }}
+            >
+              {formatChange(stats.btcChange24h)} 24h
+            </span>
+          )}
+          {stats.fearGreedValue !== null && (
+            <span className="text-xs" style={{ color: "oklch(0.55 0.008 65)" }}>
+              Fear &amp; Greed: {stats.fearGreedValue} · {stats.fearGreedLabel}
+            </span>
+          )}
+        </div>
+
+        {/* Hero content */}
+        <div className="container relative z-10 py-24 lg:py-32">
+          <div className="max-w-2xl">
+            <p className="section-label mb-5 animate-fade-up">
+              Halfacre Research · Institutional Bitcoin Management
+            </p>
+            <h1
+              className="animate-fade-up-delay-1"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(2.6rem, 6vw, 4.5rem)",
+                fontWeight: 700,
+                lineHeight: 1.08,
+                color: "#F5F0E8",
+                marginBottom: "1.5rem",
+              }}
+            >
+              Bitcoin Treasury
+              <br />
+              <em style={{ color: "oklch(0.73 0.12 75)", fontStyle: "italic" }}>Codex</em>
+            </h1>
+            <p
+              className="animate-fade-up-delay-2"
+              style={{
+                color: "oklch(0.70 0.008 65)",
+                fontSize: "1.05rem",
+                lineHeight: 1.75,
+                maxWidth: "520px",
+                marginBottom: "2.5rem",
+              }}
+            >
+              Institutional-grade Bitcoin accumulation powered by AI, machine learning,
+              and blockchain analytics. Built for HNWIs, family offices, and institutional
+              treasuries that understand Bitcoin is the asset of the century.
+            </p>
+            <div className="flex flex-wrap gap-4 animate-fade-up-delay-3">
+              <button
+                className="btn-gold"
+                onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                Book a Consultation <ArrowRight size={14} />
+              </button>
+              <button
+                className="btn-ghost-gold"
+                onClick={() => document.querySelector("#how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                How It Works
+              </button>
+            </div>
+
+            {/* Live signal count */}
+            {!stats.loading && (
+              <div
+                className="mt-10 inline-flex items-center gap-3 px-4 py-2.5"
+                style={{
+                  background: "rgba(201,168,76,0.08)",
+                  border: "1px solid rgba(201,168,76,0.2)",
+                }}
+              >
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: "#4ade80", boxShadow: "0 0 6px #4ade80" }}
+                />
+                <span className="text-xs font-medium tracking-wide" style={{ color: "oklch(0.73 0.12 75)" }}>
+                  LIVE · {stats.factorsSignaling}/{stats.totalFactors} factors active today
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
+          <span className="section-label" style={{ fontSize: "0.55rem" }}>SCROLL</span>
+          <ChevronDown size={16} style={{ color: "oklch(0.73 0.12 75)" }} className="animate-bounce" />
+        </div>
+      </section>
+
+      {/* ── MARQUEE STATS BAR ─────────────────────────────────── */}
+      <div
+        className="overflow-hidden py-4"
+        style={{ background: "oklch(0.73 0.12 75)", borderTop: "none" }}
+      >
+        <div className="flex whitespace-nowrap">
+          <div className="marquee-track flex shrink-0">
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-4 px-8 text-xs font-bold tracking-widest uppercase"
+                style={{ color: "#0A0A0A" }}
+              >
+                {item}
+                <span style={{ color: "rgba(10,10,10,0.35)" }}>◆</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── THE OPPORTUNITY ──────────────────────────────────── */}
+      <section id="about" className="py-28 lg:py-36">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left — text */}
+            <div>
+              <p className="section-label mb-5">The Opportunity</p>
+              <h2
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: "clamp(2rem, 4vw, 3rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  color: "#F5F0E8",
+                  marginBottom: "1.5rem",
+                }}
+              >
+                Bitcoin Has Outperformed
+                <br />
+                <em style={{ color: "oklch(0.73 0.12 75)" }}>Every Asset Class.</em>
+                <br />
+                Most Portfolios Have Zero Exposure.
+              </h2>
+              <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8, marginBottom: "1.25rem" }}>
+                Over the past decade, Bitcoin has delivered returns that no other asset class
+                has come close to matching. Yet the overwhelming majority of institutional
+                capital remains on the sidelines — held back by operational complexity,
+                custody concerns, and the absence of a systematic, disciplined accumulation strategy.
+              </p>
+              <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8, marginBottom: "2rem" }}>
+                Bitcoin Treasury Codex was built to solve exactly that problem.
+              </p>
+              <button
+                className="btn-ghost-gold"
+                onClick={() => document.querySelector("#how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                See How We Do It <ArrowRight size={14} />
+              </button>
+            </div>
+
+            {/* Right — stats */}
+            <div ref={statsRef} className="grid grid-cols-2 gap-6">
+              {[
+                { label: "BTC 10-Year Return", value: btcReturn.toLocaleString() + "%", sub: "vs ~500% S&P 500" },
+                { label: "Historical Candles", value: candles.toLocaleString(), sub: "Analyzed daily" },
+                { label: "Quantitative Factors", value: factors.toString(), sub: "Backtested 2015–2026" },
+                { label: "Years Experience", value: years.toString(), sub: "Investment expertise" },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="card-dark p-6"
+                  style={{ borderLeft: "2px solid oklch(0.73 0.12 75)" }}
+                >
+                  <div className="stat-number mb-1">{s.value}</div>
+                  <div className="text-xs font-semibold tracking-wide uppercase mb-1" style={{ color: "#F5F0E8" }}>
+                    {s.label}
+                  </div>
+                  <div className="text-xs" style={{ color: "oklch(0.55 0.008 65)" }}>{s.sub}</div>
+                </div>
+              ))}
+              <p
+                className="col-span-2 text-xs"
+                style={{ color: "oklch(0.45 0.006 65)" }}
+              >
+                Sources: Slickcharts, Coinbase Institutional Survey 2025. Past performance is not indicative of future results.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="gold-line" />
+
+      {/* ── THE STRATEGY ─────────────────────────────────────── */}
+      <section
+        id="how-it-works"
+        className="relative py-28 lg:py-36 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${STRATEGY_BG})`, opacity: 0.12 }}
+        />
+        <div className="container relative z-10">
+          <div className="max-w-xl mb-16">
+            <p className="section-label mb-5">The Strategy</p>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+                fontWeight: 700,
+                lineHeight: 1.15,
+                color: "#F5F0E8",
+                marginBottom: "1rem",
+              }}
+            >
+              Two Engines.
+              <br />
+              <em style={{ color: "oklch(0.73 0.12 75)" }}>One Goal: More Bitcoin.</em>
+            </h2>
+            <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8 }}>
+              Every decision Codex makes is designed to increase your Bitcoin holdings
+              in Bitcoin-denominated terms. Not in dollars. In Bitcoin.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Engine 01 */}
+            <div className="card-dark p-8 relative overflow-hidden">
+              <div
+                className="absolute top-0 left-0 w-1 h-full"
+                style={{ background: "oklch(0.73 0.12 75)" }}
+              />
+              <div className="flex items-start gap-5">
+                <div
+                  className="w-12 h-12 flex items-center justify-center shrink-0"
+                  style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)" }}
+                >
+                  <TrendingUp size={20} style={{ color: "oklch(0.73 0.12 75)" }} />
+                </div>
+                <div>
+                  <p className="section-label mb-3">01 — DCA Engine</p>
+                  <h3
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "1.35rem",
+                      fontWeight: 600,
+                      color: "#F5F0E8",
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    Algorithmic BTC Accumulation
+                  </h3>
+                  <p style={{ color: "oklch(0.60 0.008 65)", lineHeight: 1.75, fontSize: "0.9rem" }}>
+                    Our AI-driven DCA engine analyzes 11 technical indicators across 7 timeframes
+                    and 75,000+ historical candles to identify optimal Bitcoin entry points.
+                    Capital is deployed systematically, not emotionally.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Engine 02 */}
+            <div className="card-dark p-8 relative overflow-hidden">
+              <div
+                className="absolute top-0 left-0 w-1 h-full"
+                style={{ background: "oklch(0.73 0.12 75)" }}
+              />
+              <div className="flex items-start gap-5">
+                <div
+                  className="w-12 h-12 flex items-center justify-center shrink-0"
+                  style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)" }}
+                >
+                  <BarChart3 size={20} style={{ color: "oklch(0.73 0.12 75)" }} />
+                </div>
+                <div>
+                  <p className="section-label mb-3">02 — Rotation Engine</p>
+                  <h3
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "1.35rem",
+                      fontWeight: 600,
+                      color: "#F5F0E8",
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    BTC-Denominated Rotation
+                  </h3>
+                  <p style={{ color: "oklch(0.60 0.008 65)", lineHeight: 1.75, fontSize: "0.9rem" }}>
+                    When market conditions present asymmetric opportunities in select commodity
+                    assets, Codex rotates a portion of holdings to generate additional Bitcoin
+                    yield. Every trade is measured in BTC gained, not USD profit.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── THE PLATFORM ─────────────────────────────────────── */}
+      <section id="platform" className="py-28 lg:py-36" style={{ background: "oklch(0.10 0.003 285)" }}>
+        <div className="container">
+          <div className="max-w-xl mb-16">
+            <p className="section-label mb-5">The Platform</p>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+                fontWeight: 700,
+                lineHeight: 1.15,
+                color: "#F5F0E8",
+                marginBottom: "1rem",
+              }}
+            >
+              A Unified Intelligence
+              <br />
+              <em style={{ color: "oklch(0.73 0.12 75)" }}>Operating System</em>
+            </h2>
+            <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8 }}>
+              Six interconnected properties. One data spine. Every signal, backtest, and
+              client report flows from the same 111-factor quantitative engine.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                icon: <Cpu size={20} />,
+                title: "The Brain",
+                sub: "tradinghq.codexyield.com",
+                desc: "Live trading dashboard. 111 factors × 4 coins. ML predictions, backtest results, signal consensus.",
+                live: true,
+              },
+              {
+                icon: <BarChart3 size={20} />,
+                title: "The Hands",
+                sub: "autotrades.codexyield.com",
+                desc: "Automated execution engine. Translates ML + factor consensus into trade recommendations.",
+                live: true,
+              },
+              {
+                icon: <Users size={20} />,
+                title: "The Report Card",
+                sub: "client.codexyield.com",
+                desc: "Client portal. Real-time portfolio performance, position history, and strategy updates.",
+                live: true,
+              },
+              {
+                icon: <TrendingUp size={20} />,
+                title: "The Storefront",
+                sub: "codexyield.com",
+                desc: "This site. Institutional marketing, live factor stats, and strategy performance.",
+                live: true,
+              },
+              {
+                icon: <Shield size={20} />,
+                title: "The Pitch",
+                sub: "pitch.codexyield.com",
+                desc: "Investor pitch deck. Walk-forward backtested performance 2015–2026.",
+                live: false,
+              },
+              {
+                icon: <Lock size={20} />,
+                title: "The Books",
+                sub: "books.codexyield.com",
+                desc: "Internal accounting and bookkeeping operations for Halfacre Research.",
+                live: false,
+              },
+            ].map((p) => (
+              <div
+                key={p.title}
+                className="card-dark p-6 flex flex-col gap-4"
+                style={{ borderTop: `2px solid ${p.live ? "oklch(0.73 0.12 75)" : "rgba(255,255,255,0.08)"}` }}
+              >
+                <div className="flex items-center justify-between">
+                  <div
+                    className="w-10 h-10 flex items-center justify-center"
+                    style={{
+                      background: p.live ? "rgba(201,168,76,0.1)" : "rgba(255,255,255,0.04)",
+                      border: `1px solid ${p.live ? "rgba(201,168,76,0.2)" : "rgba(255,255,255,0.06)"}`,
+                    }}
+                  >
+                    <span style={{ color: p.live ? "oklch(0.73 0.12 75)" : "oklch(0.45 0.006 65)" }}>
+                      {p.icon}
+                    </span>
+                  </div>
+                  {p.live && (
+                    <span
+                      className="text-xs font-semibold tracking-widest uppercase px-2 py-1"
+                      style={{
+                        background: "rgba(74,222,128,0.1)",
+                        border: "1px solid rgba(74,222,128,0.2)",
+                        color: "#4ade80",
+                      }}
+                    >
+                      Live
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <h3
+                    className="font-semibold mb-1"
+                    style={{ color: "#F5F0E8", fontFamily: "'Playfair Display', serif" }}
+                  >
+                    {p.title}
+                  </h3>
+                  <p className="text-xs mb-2" style={{ color: "oklch(0.73 0.12 75)" }}>{p.sub}</p>
+                  <p className="text-sm" style={{ color: "oklch(0.58 0.008 65)", lineHeight: 1.65 }}>{p.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PERFORMANCE ──────────────────────────────────────── */}
+      <section id="performance" className="py-28 lg:py-36">
+        <div className="container">
+          <div className="max-w-xl mb-16">
+            <p className="section-label mb-5">Performance</p>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+                fontWeight: 700,
+                lineHeight: 1.15,
+                color: "#F5F0E8",
+                marginBottom: "1rem",
+              }}
+            >
+              Backtested Results.
+              <br />
+              <em style={{ color: "oklch(0.73 0.12 75)" }}>Walk-Forward Validated.</em>
+            </h2>
+            <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8 }}>
+              111 quantitative factors backtested against real historical data (2015–2026).
+              Methodology: 1.6% round-trip cost, three trailing stop sizes, tranche entry logic.
+              Top factors by BTC-denominated annual return:
+            </p>
+          </div>
+
+          <div ref={perfRef} className="overflow-x-auto">
+            <table className="w-full text-sm" style={{ borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid rgba(201,168,76,0.3)" }}>
+                  {["Pair", "Factor", "BTC Return / Year", "Stop Type", "Period"].map((h) => (
+                    <th
+                      key={h}
+                      className="text-left py-3 px-4 text-xs font-semibold tracking-widest uppercase"
+                      style={{ color: "oklch(0.73 0.12 75)" }}
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {PERF_DATA.map((row, i) => (
+                  <tr
+                    key={i}
+                    style={{
+                      borderBottom: "1px solid rgba(255,255,255,0.04)",
+                      opacity: perfInView ? 1 : 0,
+                      transform: perfInView ? "none" : "translateY(12px)",
+                      transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`,
+                    }}
+                  >
+                    <td className="py-4 px-4 font-medium" style={{ color: "#F5F0E8" }}>{row.coin}</td>
+                    <td className="py-4 px-4" style={{ color: "oklch(0.70 0.008 65)" }}>{row.factor}</td>
+                    <td className="py-4 px-4 font-bold tabular-nums" style={{ color: "oklch(0.73 0.12 75)" }}>
+                      +{row.btcReturn}% BTC/yr
+                    </td>
+                    <td className="py-4 px-4" style={{ color: "oklch(0.60 0.008 65)" }}>{row.stopType}</td>
+                    <td className="py-4 px-4" style={{ color: "oklch(0.55 0.008 65)" }}>{row.periods}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-6 text-xs" style={{ color: "oklch(0.42 0.006 65)" }}>
+            Backtested results. Walk-forward validation methodology. 1.6% round-trip cost applied.
+            Past performance is not indicative of future results. For qualified investors only.
+          </p>
+
+          <div className="mt-10">
+            <a
+              href="https://pitch.codexyield.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost-gold inline-flex"
+            >
+              View Full Performance Deck <ExternalLink size={13} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div className="gold-line" />
+
+      {/* ── FOUNDER ──────────────────────────────────────────── */}
+      <section id="about-founder" className="py-28 lg:py-36" style={{ background: "oklch(0.10 0.003 285)" }}>
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Image */}
+            <div className="relative">
+              <div
+                className="absolute -inset-3 opacity-20"
+                style={{
+                  background: "linear-gradient(135deg, oklch(0.73 0.12 75), transparent)",
+                  filter: "blur(40px)",
+                }}
+              />
+              <img
+                src={FOUNDER_IMG}
+                alt="Matthew Halfacre — Founder, Halfacre Research"
+                className="relative w-full max-w-sm mx-auto lg:mx-0 object-cover"
+                style={{ aspectRatio: "1/1", filter: "grayscale(20%)" }}
+              />
+            </div>
+
+            {/* Text */}
+            <div>
+              <p className="section-label mb-5">The Founder</p>
+              <h2
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)",
+                  fontWeight: 700,
+                  color: "#F5F0E8",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Matthew Halfacre
+              </h2>
+              <p className="text-xs font-medium tracking-widest uppercase mb-6" style={{ color: "oklch(0.73 0.12 75)" }}>
+                Founder &amp; CEO · Halfacre Research
+              </p>
+              <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8, marginBottom: "1.25rem" }}>
+                24 years of investment experience. A 69-year family legacy in financial markets.
+                Author of the Bitcoin 2050 Whitepaper — a 42-section, 25-year projection on
+                Bitcoin's path to becoming the global reserve asset.
+              </p>
+              <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8, marginBottom: "2rem" }}>
+                Matthew built Bitcoin Treasury Codex because he believed institutional investors
+                deserved a disciplined, transparent, and algorithmically-sound way to accumulate
+                Bitcoin without leverage, without derivatives, and without guesswork.
+              </p>
+
+              {/* Quote */}
+              <blockquote
+                className="pl-5 mb-6"
+                style={{ borderLeft: "2px solid oklch(0.73 0.12 75)" }}
+              >
+                <p
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontStyle: "italic",
+                    color: "oklch(0.80 0.008 65)",
+                    lineHeight: 1.7,
+                    fontSize: "1.05rem",
+                  }}
+                >
+                  "The future of investing lies at the nexus of AI, machine learning,
+                  blockchain, and quantum computing."
+                </p>
+              </blockquote>
+
+              {/* Featured in */}
+              <p className="section-label mb-3">As Featured In</p>
+              <div className="flex flex-wrap gap-3">
+                {["TechBullion", "Capital Insight Hub", "Wantrepreneur Show", "Bitcoin 2050 Whitepaper"].map((pub) => (
+                  <span
+                    key={pub}
+                    className="text-xs font-medium px-3 py-1.5 tracking-wide"
+                    style={{
+                      background: "rgba(201,168,76,0.08)",
+                      border: "1px solid rgba(201,168,76,0.15)",
+                      color: "oklch(0.73 0.12 75)",
+                    }}
+                  >
+                    {pub}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECURITY ─────────────────────────────────────────── */}
+      <section
+        id="security"
+        className="relative py-28 lg:py-36 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${SECURITY_BG})`, opacity: 0.15 }}
+        />
+        <div className="absolute inset-0" style={{ background: "rgba(10,10,10,0.75)" }} />
+
+        <div className="container relative z-10">
+          <div className="max-w-xl mb-16">
+            <p className="section-label mb-5">Security &amp; Custody</p>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(2rem, 4vw, 3rem)",
+                fontWeight: 700,
+                lineHeight: 1.15,
+                color: "#F5F0E8",
+                marginBottom: "1rem",
+              }}
+            >
+              Institutional Infrastructure.
+              <br />
+              <em style={{ color: "oklch(0.73 0.12 75)" }}>Client-Controlled Assets.</em>
+            </h2>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-6">
+            {[
+              {
+                icon: <BarChart3 size={22} />,
+                title: "SFOX Prime Execution",
+                desc: "Institutional-grade execution across 30+ liquidity venues. Best-in-class price discovery for every trade.",
+              },
+              {
+                icon: <Shield size={22} />,
+                title: "SAFE Trust Custody",
+                desc: "Assets held by a qualified custodian trust. Your Bitcoin is never commingled with firm assets.",
+              },
+              {
+                icon: <Lock size={22} />,
+                title: "Client-Controlled Accounts",
+                desc: "You own your SFOX account. Halfacre Research holds trading permissions only. Zero withdrawal rights.",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="card-dark p-7 flex flex-col gap-4"
+              >
+                <div
+                  className="w-11 h-11 flex items-center justify-center"
+                  style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)" }}
+                >
+                  <span style={{ color: "oklch(0.73 0.12 75)" }}>{item.icon}</span>
+                </div>
+                <h3
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "1.1rem",
+                    fontWeight: 600,
+                    color: "#F5F0E8",
+                  }}
+                >
+                  {item.title}
+                </h3>
+                <p style={{ color: "oklch(0.60 0.008 65)", lineHeight: 1.7, fontSize: "0.875rem" }}>
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="gold-line" />
+
+      {/* ── NEWSLETTER ───────────────────────────────────────── */}
+      <section className="py-20 lg:py-24" style={{ background: "oklch(0.10 0.003 285)" }}>
+        <div className="container">
+          <div className="max-w-2xl mx-auto text-center">
+            <p className="section-label mb-4">Stay Informed</p>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)",
+                fontWeight: 700,
+                color: "#F5F0E8",
+                marginBottom: "1rem",
+              }}
+            >
+              Get Bitcoin Intelligence
+              <br />
+              <em style={{ color: "oklch(0.73 0.12 75)" }}>Delivered to Your Inbox</em>
+            </h2>
+            <p style={{ color: "oklch(0.60 0.008 65)", lineHeight: 1.8, marginBottom: "2rem" }}>
+              Join 340+ subscribers receiving <strong style={{ color: "#F5F0E8" }}>"The New School"</strong> newsletter.
+              Institutional-grade Bitcoin analysis, strategy updates, and market intelligence.
+              No spam. Unsubscribe anytime.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="flex-1 px-4 py-3 text-sm"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  color: "#F5F0E8",
+                  outline: "none",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "oklch(0.73 0.12 75)")}
+                onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.12)")}
+              />
+              <button className="btn-gold shrink-0">Subscribe</button>
+            </div>
+            <p className="mt-4 text-xs" style={{ color: "oklch(0.45 0.006 65)" }}>
+              Or read the newsletter directly on{" "}
+              <a
+                href="https://www.linkedin.com/in/matthewhalfacre/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+                style={{ color: "oklch(0.73 0.12 75)" }}
+              >
+                LinkedIn
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTACT / CTA ────────────────────────────────────── */}
+      <section id="contact" className="py-28 lg:py-36">
+        <div className="container">
+          <div className="max-w-2xl mx-auto text-center">
+            <p className="section-label mb-5">Ready to Begin</p>
+            <h2
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(2rem, 4vw, 3.2rem)",
+                fontWeight: 700,
+                lineHeight: 1.15,
+                color: "#F5F0E8",
+                marginBottom: "1.25rem",
+              }}
+            >
+              Schedule Your
+              <br />
+              <em style={{ color: "oklch(0.73 0.12 75)" }}>Consultation</em>
+            </h2>
+            <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8, marginBottom: "2.5rem" }}>
+              Minimum investment: $100,000 USD. Qualified investors only. Book a private
+              consultation with Matthew Halfacre to discuss whether Bitcoin Treasury Codex
+              is right for your portfolio.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <a
+                href="mailto:matt@halfacreresearch.tech"
+                className="btn-gold"
+              >
+                Book a Consultation <ArrowRight size={14} />
+              </a>
+              <a
+                href="https://client.codexyield.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost-gold"
+              >
+                Client Portal <ExternalLink size={13} />
+              </a>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm" style={{ color: "oklch(0.55 0.008 65)" }}>
+              <a
+                href="mailto:matt@halfacreresearch.tech"
+                className="hover:text-gold transition-colors"
+                style={{ color: "oklch(0.55 0.008 65)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.55 0.008 65)")}
+              >
+                matt@halfacreresearch.tech
+              </a>
+              <span className="hidden sm:inline">·</span>
+              <a
+                href="tel:+12512280500"
+                className="transition-colors"
+                style={{ color: "oklch(0.55 0.008 65)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.55 0.008 65)")}
+              >
+                (251) 228-0500
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ───────────────────────────────────────────── */}
+      <footer
+        style={{
+          background: "oklch(0.07 0.003 285)",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <div className="container py-14">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+            {/* Brand */}
+            <div className="lg:col-span-1">
+              <p
+                className="font-bold tracking-widest uppercase text-xs mb-3"
+                style={{ color: "oklch(0.73 0.12 75)", letterSpacing: "0.18em" }}
+              >
+                Bitcoin Treasury Codex
+              </p>
+              <p className="text-xs leading-relaxed mb-4" style={{ color: "oklch(0.50 0.006 65)" }}>
+                Institutional-grade Bitcoin intelligence built for the modern treasury.
+                Powered by AI, machine learning, and blockchain analytics.
+                Operated by Halfacre Research.
+              </p>
+              <a
+                href="https://www.linkedin.com/in/matthewhalfacre/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-medium tracking-widest uppercase"
+                style={{ color: "oklch(0.73 0.12 75)" }}
+              >
+                LinkedIn Newsletter →
+              </a>
+            </div>
+
+            {/* Navigate */}
+            <div>
+              <p className="section-label mb-4">Navigate</p>
+              {["Home", "About Matthew", "How It Works", "The Platform", "Performance", "Contact"].map((l) => (
+                <a
+                  key={l}
+                  href="#"
+                  className="block text-xs mb-2.5 transition-colors"
+                  style={{ color: "oklch(0.50 0.006 65)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
+                >
+                  {l}
+                </a>
+              ))}
+            </div>
+
+            {/* Resources */}
+            <div>
+              <p className="section-label mb-4">Resources</p>
+              {[
+                { label: "Bitcoin 2050 Whitepaper", href: "#" },
+                { label: "The New School Newsletter", href: "https://www.linkedin.com/in/matthewhalfacre/" },
+                { label: "TechBullion Feature", href: "#" },
+                { label: "Capital Insight Hub", href: "#" },
+                { label: "Client Portal", href: "https://client.codexyield.com" },
+                { label: "Investor Pitch Deck", href: "https://pitch.codexyield.com" },
+              ].map((l) => (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  target={l.href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  className="block text-xs mb-2.5 transition-colors"
+                  style={{ color: "oklch(0.50 0.006 65)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
+                >
+                  {l.label}
+                </a>
+              ))}
+            </div>
+
+            {/* Contact */}
+            <div>
+              <p className="section-label mb-4">Contact</p>
+              <a
+                href="mailto:matt@halfacreresearch.tech"
+                className="block text-xs mb-2.5"
+                style={{ color: "oklch(0.50 0.006 65)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
+              >
+                matt@halfacreresearch.tech
+              </a>
+              <a
+                href="tel:+12512280500"
+                className="block text-xs mb-2.5"
+                style={{ color: "oklch(0.50 0.006 65)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
+              >
+                (251) 228-0500
+              </a>
+              <button
+                className="btn-gold text-xs mt-4"
+                onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                Book a Consultation
+              </button>
+            </div>
+          </div>
+
+          <div className="gold-line mb-6" />
+
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <p className="text-xs" style={{ color: "oklch(0.40 0.005 65)" }}>
+              © 2026 Halfacre Research. All rights reserved.
+            </p>
+            <div className="flex gap-5">
+              {["Terms of Service", "Privacy Policy"].map((l) => (
+                <a
+                  key={l}
+                  href="#"
+                  className="text-xs transition-colors"
+                  style={{ color: "oklch(0.40 0.005 65)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.40 0.005 65)")}
+                >
+                  {l}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-6 text-xs leading-relaxed" style={{ color: "oklch(0.35 0.004 65)", maxWidth: "700px" }}>
+            <strong style={{ color: "oklch(0.45 0.005 65)" }}>Important Disclosure:</strong>{" "}
+            Bitcoin Treasury Codex is operated by Halfacre Research. Bitcoin and all digital assets
+            traded within this strategy are classified as commodities. Halfacre Research is not a
+            registered investment advisor. Past performance is not indicative of future results.
+            All investments involve risk, including the possible loss of principal. This website does
+            not constitute an offer to sell or a solicitation of an offer to buy any security.
+            For qualified investors only. Minimum investment: $100,000 USD.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
