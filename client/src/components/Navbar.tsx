@@ -1,13 +1,15 @@
 /* =============================================================
-   DESIGN: Dark Luxury — fixed top nav, gold accents, Inter font
+   DESIGN: Dark Luxury — fixed top nav, BTC orange (#F7931A) accents, Inter font
    ============================================================= */
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
+const ORANGE = "oklch(0.72 0.17 55)";
+
 const navLinks = [
   { label: "About", href: "#about" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "The Platform", href: "#platform" },
+  { label: "The Intelligence", href: "#platform" },
   { label: "Performance", href: "#performance" },
   { label: "Security", href: "#security" },
   { label: "Contact", href: "#contact" },
@@ -33,9 +35,7 @@ export default function Navbar() {
     <header
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       style={{
-        background: scrolled
-          ? "rgba(10,10,10,0.95)"
-          : "transparent",
+        background: scrolled ? "rgba(10,10,10,0.95)" : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
         borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
       }}
@@ -49,13 +49,13 @@ export default function Navbar() {
         >
           <span
             className="font-bold tracking-widest uppercase text-xs"
-            style={{ color: "oklch(0.73 0.12 75)", letterSpacing: "0.18em" }}
+            style={{ color: ORANGE, letterSpacing: "0.18em" }}
           >
             Bitcoin Treasury
           </span>
           <span
             className="font-bold tracking-widest uppercase text-xs"
-            style={{ color: "oklch(0.73 0.12 75)", letterSpacing: "0.18em" }}
+            style={{ color: ORANGE, letterSpacing: "0.18em" }}
           >
             Codex
           </span>
@@ -68,11 +68,8 @@ export default function Navbar() {
               key={link.href}
               onClick={() => handleNav(link.href)}
               className="text-xs font-medium tracking-widest uppercase transition-colors duration-200"
-              style={{
-                color: "oklch(0.65 0.008 65)",
-                letterSpacing: "0.12em",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+              style={{ color: "oklch(0.65 0.008 65)", letterSpacing: "0.12em" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
               onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.65 0.008 65)")}
             >
               {link.label}
@@ -88,7 +85,7 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className="text-xs font-medium tracking-widest uppercase transition-colors duration-200"
             style={{ color: "oklch(0.65 0.008 65)", letterSpacing: "0.12em" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
             onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.65 0.008 65)")}
           >
             Client Portal
@@ -104,7 +101,7 @@ export default function Navbar() {
         {/* Mobile menu toggle */}
         <button
           className="lg:hidden p-2"
-          style={{ color: "oklch(0.73 0.12 75)" }}
+          style={{ color: ORANGE }}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -116,10 +113,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div
           className="lg:hidden border-t"
-          style={{
-            background: "rgba(10,10,10,0.98)",
-            borderColor: "rgba(255,255,255,0.06)",
-          }}
+          style={{ background: "rgba(10,10,10,0.98)", borderColor: "rgba(255,255,255,0.06)" }}
         >
           <div className="container py-6 flex flex-col gap-5">
             {navLinks.map((link) => (

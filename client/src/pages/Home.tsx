@@ -1,10 +1,11 @@
 /* =============================================================
-   DESIGN: Dark Luxury — #0A0A0A bg, #C9A84C gold, Playfair + Inter
+   DESIGN: Dark Luxury — #0A0A0A bg, #F7931A BTC orange, Playfair + Inter
    Sections: Hero → Stats Marquee → Opportunity → Strategy →
-             Platform → Performance → Founder → Security →
+             Intelligence → Performance → Founder → Security →
              Newsletter → Contact → Footer
    ============================================================= */
 import { useEffect, useRef, useState } from "react";
+import { Link } from "wouter";
 import Navbar from "@/components/Navbar";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import {
@@ -17,6 +18,9 @@ import {
   Users,
   ChevronDown,
   ExternalLink,
+  Database,
+  Brain,
+  Activity,
 } from "lucide-react";
 
 // ─── Image CDN URLs ───────────────────────────────────────────
@@ -24,6 +28,11 @@ const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5
 const STRATEGY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-strategy-bg-EApfaQxUnLV4mqEy3KBvqL.webp";
 const SECURITY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-security-bg-JfextvZ9ocCiU5a6eEATHx.webp";
 const FOUNDER_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-founder-4BnA6camC7FF4rMgcuScSU.webp";
+
+// ─── BTC orange token ─────────────────────────────────────────
+const ORANGE = "oklch(0.72 0.17 55)";
+const ORANGE_BG = "rgba(247,147,26,0.08)";
+const ORANGE_BORDER = "rgba(247,147,26,0.2)";
 
 // ─── Helpers ─────────────────────────────────────────────────
 function formatPrice(n: number | null) {
@@ -74,9 +83,9 @@ function useInView(threshold = 0.2) {
 const MARQUEE_ITEMS = [
   "24 YEARS INVESTMENT EXPERIENCE",
   "$100K MINIMUM INVESTMENT",
-  "0 LEVERAGE OR DERIVATIVES",
+  "NO LEVERAGE OR DERIVATIVES",
   "100% BITCOIN FOCUSED",
-  "18,716% BTC 10-YEAR RETURN",
+  "27,248% BTC 10-YEAR RETURN",
   "75,303 HISTORICAL CANDLES ANALYZED",
   "30+ LIQUIDITY VENUES VIA SFOX",
   "SAFE QUALIFIED CUSTODIAN TRUST",
@@ -99,7 +108,8 @@ export default function Home() {
   const { ref: perfRef, inView: perfInView } = useInView();
   const { ref: statsRef, inView: statsInView } = useInView();
 
-  const btcReturn = useCountUp(18716, 2000, statsInView);
+  // Verified figures: BTC 2015-2025 cumulative = 27,248% (StatMuse); S&P 2015-2025 = ~304%
+  const btcReturn = useCountUp(27248, 2000, statsInView);
   const candles = useCountUp(75303, 2000, statsInView);
   const factors = useCountUp(111, 1200, statsInView);
   const years = useCountUp(24, 1000, statsInView);
@@ -113,12 +123,10 @@ export default function Home() {
         className="relative min-h-screen flex items-center overflow-hidden"
         style={{ paddingTop: "5rem" }}
       >
-        {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${HERO_BG})`, opacity: 0.45 }}
         />
-        {/* Gradient overlay — left side darker for text legibility */}
         <div
           className="absolute inset-0"
           style={{
@@ -126,7 +134,7 @@ export default function Home() {
           }}
         />
 
-        {/* Live BTC ticker — top right */}
+        {/* Live BTC ticker */}
         <div
           className="absolute top-20 right-6 lg:right-12 flex flex-col items-end gap-1 z-10"
           style={{ opacity: stats.loading ? 0.4 : 1 }}
@@ -137,7 +145,7 @@ export default function Home() {
             style={{
               fontFamily: "'Playfair Display', serif",
               fontSize: "clamp(1.4rem, 3vw, 2rem)",
-              color: "oklch(0.73 0.12 75)",
+              color: ORANGE,
             }}
           >
             {formatPrice(stats.btcPrice)}
@@ -145,9 +153,7 @@ export default function Home() {
           {stats.btcChange24h !== null && (
             <span
               className="text-xs font-semibold tabular-nums"
-              style={{
-                color: stats.btcChange24h >= 0 ? "#4ade80" : "#f87171",
-              }}
+              style={{ color: stats.btcChange24h >= 0 ? "#4ade80" : "#f87171" }}
             >
               {formatChange(stats.btcChange24h)} 24h
             </span>
@@ -178,7 +184,7 @@ export default function Home() {
             >
               Bitcoin Treasury
               <br />
-              <em style={{ color: "oklch(0.73 0.12 75)", fontStyle: "italic" }}>Codex</em>
+              <em style={{ color: ORANGE, fontStyle: "italic" }}>Codex</em>
             </h1>
             <p
               className="animate-fade-up-delay-2"
@@ -209,20 +215,16 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Live signal count */}
             {!stats.loading && (
               <div
                 className="mt-10 inline-flex items-center gap-3 px-4 py-2.5"
-                style={{
-                  background: "rgba(201,168,76,0.08)",
-                  border: "1px solid rgba(201,168,76,0.2)",
-                }}
+                style={{ background: ORANGE_BG, border: `1px solid ${ORANGE_BORDER}` }}
               >
                 <span
                   className="w-2 h-2 rounded-full"
                   style={{ background: "#4ade80", boxShadow: "0 0 6px #4ade80" }}
                 />
-                <span className="text-xs font-medium tracking-wide" style={{ color: "oklch(0.73 0.12 75)" }}>
+                <span className="text-xs font-medium tracking-wide" style={{ color: ORANGE }}>
                   LIVE · {stats.factorsSignaling}/{stats.totalFactors} factors active today
                 </span>
               </div>
@@ -230,17 +232,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
           <span className="section-label" style={{ fontSize: "0.55rem" }}>SCROLL</span>
-          <ChevronDown size={16} style={{ color: "oklch(0.73 0.12 75)" }} className="animate-bounce" />
+          <ChevronDown size={16} style={{ color: ORANGE }} className="animate-bounce" />
         </div>
       </section>
 
       {/* ── MARQUEE STATS BAR ─────────────────────────────────── */}
       <div
         className="overflow-hidden py-4"
-        style={{ background: "oklch(0.73 0.12 75)", borderTop: "none" }}
+        style={{ background: ORANGE }}
       >
         <div className="flex whitespace-nowrap">
           <div className="marquee-track flex shrink-0">
@@ -262,7 +263,6 @@ export default function Home() {
       <section id="about" className="py-28 lg:py-36">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left — text */}
             <div>
               <p className="section-label mb-5">The Opportunity</p>
               <h2
@@ -277,7 +277,7 @@ export default function Home() {
               >
                 Bitcoin Has Outperformed
                 <br />
-                <em style={{ color: "oklch(0.73 0.12 75)" }}>Every Asset Class.</em>
+                <em style={{ color: ORANGE }}>Every Asset Class.</em>
                 <br />
                 Most Portfolios Have Zero Exposure.
               </h2>
@@ -301,7 +301,7 @@ export default function Home() {
             {/* Right — stats */}
             <div ref={statsRef} className="grid grid-cols-2 gap-6">
               {[
-                { label: "BTC 10-Year Return", value: btcReturn.toLocaleString() + "%", sub: "vs ~500% S&P 500" },
+                { label: "BTC 10-Year Return", value: btcReturn.toLocaleString() + "%", sub: "vs ~304% S&P 500 (2015–2025)" },
                 { label: "Historical Candles", value: candles.toLocaleString(), sub: "Analyzed daily" },
                 { label: "Quantitative Factors", value: factors.toString(), sub: "Backtested 2015–2026" },
                 { label: "Years Experience", value: years.toString(), sub: "Investment expertise" },
@@ -309,7 +309,7 @@ export default function Home() {
                 <div
                   key={s.label}
                   className="card-dark p-6"
-                  style={{ borderLeft: "2px solid oklch(0.73 0.12 75)" }}
+                  style={{ borderLeft: `2px solid ${ORANGE}` }}
                 >
                   <div className="stat-number mb-1">{s.value}</div>
                   <div className="text-xs font-semibold tracking-wide uppercase mb-1" style={{ color: "#F5F0E8" }}>
@@ -318,11 +318,8 @@ export default function Home() {
                   <div className="text-xs" style={{ color: "oklch(0.55 0.008 65)" }}>{s.sub}</div>
                 </div>
               ))}
-              <p
-                className="col-span-2 text-xs"
-                style={{ color: "oklch(0.45 0.006 65)" }}
-              >
-                Sources: Slickcharts, Coinbase Institutional Survey 2025. Past performance is not indicative of future results.
+              <p className="col-span-2 text-xs" style={{ color: "oklch(0.45 0.006 65)" }}>
+                Sources: StatMuse, Slickcharts (2015–2025 cumulative returns). Past performance is not indicative of future results.
               </p>
             </div>
           </div>
@@ -355,7 +352,7 @@ export default function Home() {
             >
               Two Engines.
               <br />
-              <em style={{ color: "oklch(0.73 0.12 75)" }}>One Goal: More Bitcoin.</em>
+              <em style={{ color: ORANGE }}>One Goal: More Bitcoin.</em>
             </h2>
             <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8 }}>
               Every decision Codex makes is designed to increase your Bitcoin holdings
@@ -364,18 +361,14 @@ export default function Home() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* Engine 01 */}
             <div className="card-dark p-8 relative overflow-hidden">
-              <div
-                className="absolute top-0 left-0 w-1 h-full"
-                style={{ background: "oklch(0.73 0.12 75)" }}
-              />
+              <div className="absolute top-0 left-0 w-1 h-full" style={{ background: ORANGE }} />
               <div className="flex items-start gap-5">
                 <div
                   className="w-12 h-12 flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)" }}
+                  style={{ background: ORANGE_BG, border: `1px solid ${ORANGE_BORDER}` }}
                 >
-                  <TrendingUp size={20} style={{ color: "oklch(0.73 0.12 75)" }} />
+                  <TrendingUp size={20} style={{ color: ORANGE }} />
                 </div>
                 <div>
                   <p className="section-label mb-3">01 — DCA Engine</p>
@@ -399,18 +392,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Engine 02 */}
             <div className="card-dark p-8 relative overflow-hidden">
-              <div
-                className="absolute top-0 left-0 w-1 h-full"
-                style={{ background: "oklch(0.73 0.12 75)" }}
-              />
+              <div className="absolute top-0 left-0 w-1 h-full" style={{ background: ORANGE }} />
               <div className="flex items-start gap-5">
                 <div
                   className="w-12 h-12 flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)" }}
+                  style={{ background: ORANGE_BG, border: `1px solid ${ORANGE_BORDER}` }}
                 >
-                  <BarChart3 size={20} style={{ color: "oklch(0.73 0.12 75)" }} />
+                  <BarChart3 size={20} style={{ color: ORANGE }} />
                 </div>
                 <div>
                   <p className="section-label mb-3">02 — Rotation Engine</p>
@@ -437,11 +426,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── THE PLATFORM ─────────────────────────────────────── */}
+      {/* ── THE INTELLIGENCE ─────────────────────────────────── */}
       <section id="platform" className="py-28 lg:py-36" style={{ background: "oklch(0.10 0.003 285)" }}>
         <div className="container">
           <div className="max-w-xl mb-16">
-            <p className="section-label mb-5">The Platform</p>
+            <p className="section-label mb-5">The Intelligence</p>
             <h2
               style={{
                 fontFamily: "'Playfair Display', serif",
@@ -452,99 +441,68 @@ export default function Home() {
                 marginBottom: "1rem",
               }}
             >
-              A Unified Intelligence
+              Not a Hunch.
               <br />
-              <em style={{ color: "oklch(0.73 0.12 75)" }}>Operating System</em>
+              <em style={{ color: ORANGE }}>A System.</em>
             </h2>
             <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8 }}>
-              Six interconnected properties. One data spine. Every signal, backtest, and
-              client report flows from the same 111-factor quantitative engine.
+              Every signal Codex generates flows from the same quantitative engine — 111 factors,
+              7 XGBoost machine learning models, and 4,100+ rows of walk-forward validated
+              training data. Here is what powers the decisions behind your portfolio.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
               {
-                icon: <Cpu size={20} />,
-                title: "The Brain",
-                sub: "tradinghq.codexyield.com",
-                desc: "Live trading dashboard. 111 factors × 4 coins. ML predictions, backtest results, signal consensus.",
-                live: true,
+                icon: <Brain size={20} />,
+                title: "7 XGBoost ML Models",
+                desc: "Trained on 4,100+ rows of historical data (2015–2026). Models cover BTC technical signals, on-chain cycle position, macro regime, altcoin rotation, and DCA timing. Walk-forward backtested — not curve-fit.",
               },
               {
                 icon: <BarChart3 size={20} />,
-                title: "The Hands",
-                sub: "autotrades.codexyield.com",
-                desc: "Automated execution engine. Translates ML + factor consensus into trade recommendations.",
-                live: true,
+                title: "111 Quantitative Factors",
+                desc: "Every factor is backtested against real historical data with 1.6% round-trip transaction costs applied. Three trailing stop sizes. Tranche entry logic. Top factors deliver 3.5%+ BTC/year in backtests.",
+              },
+              {
+                icon: <Database size={20} />,
+                title: "75,303 Historical Candles",
+                desc: "Daily OHLCV data across BTC, ETH, SOL, XRP, and LINK going back to 2015. On-chain data including MVRV, NVT, exchange flows, and miner metrics layered on top.",
+              },
+              {
+                icon: <Activity size={20} />,
+                title: "Live Signal Consensus",
+                desc: "Every day, all 111 factors are evaluated against current market conditions. The system requires 3+ high-quality factors to agree before generating a rotation signal — reducing false positives.",
+              },
+              {
+                icon: <Cpu size={20} />,
+                title: "Daily Retraining",
+                desc: "ML models retrain automatically every night at 2:00 AM UTC on the latest data. Backtest engine reruns at 3:00 AM. Forward performance tracking validates every signal against real outcomes.",
               },
               {
                 icon: <Users size={20} />,
-                title: "The Report Card",
-                sub: "client.codexyield.com",
-                desc: "Client portal. Real-time portfolio performance, position history, and strategy updates.",
-                live: true,
-              },
-              {
-                icon: <TrendingUp size={20} />,
-                title: "The Storefront",
-                sub: "codexyield.com",
-                desc: "This site. Institutional marketing, live factor stats, and strategy performance.",
-                live: true,
-              },
-              {
-                icon: <Shield size={20} />,
-                title: "The Pitch",
-                sub: "pitch.codexyield.com",
-                desc: "Investor pitch deck. Walk-forward backtested performance 2015–2026.",
-                live: false,
-              },
-              {
-                icon: <Lock size={20} />,
-                title: "The Books",
-                sub: "books.codexyield.com",
-                desc: "Internal accounting and bookkeeping operations for Halfacre Research.",
-                live: false,
+                title: "Client Transparency",
+                desc: "Every active client has real-time access to their portfolio performance, position history, and the signals driving each trade decision through the private client portal.",
               },
             ].map((p) => (
               <div
                 key={p.title}
                 className="card-dark p-6 flex flex-col gap-4"
-                style={{ borderTop: `2px solid ${p.live ? "oklch(0.73 0.12 75)" : "rgba(255,255,255,0.08)"}` }}
+                style={{ borderTop: `2px solid ${ORANGE}` }}
               >
-                <div className="flex items-center justify-between">
-                  <div
-                    className="w-10 h-10 flex items-center justify-center"
-                    style={{
-                      background: p.live ? "rgba(201,168,76,0.1)" : "rgba(255,255,255,0.04)",
-                      border: `1px solid ${p.live ? "rgba(201,168,76,0.2)" : "rgba(255,255,255,0.06)"}`,
-                    }}
-                  >
-                    <span style={{ color: p.live ? "oklch(0.73 0.12 75)" : "oklch(0.45 0.006 65)" }}>
-                      {p.icon}
-                    </span>
-                  </div>
-                  {p.live && (
-                    <span
-                      className="text-xs font-semibold tracking-widest uppercase px-2 py-1"
-                      style={{
-                        background: "rgba(74,222,128,0.1)",
-                        border: "1px solid rgba(74,222,128,0.2)",
-                        color: "#4ade80",
-                      }}
-                    >
-                      Live
-                    </span>
-                  )}
+                <div
+                  className="w-10 h-10 flex items-center justify-center"
+                  style={{ background: ORANGE_BG, border: `1px solid ${ORANGE_BORDER}` }}
+                >
+                  <span style={{ color: ORANGE }}>{p.icon}</span>
                 </div>
                 <div>
                   <h3
-                    className="font-semibold mb-1"
+                    className="font-semibold mb-2"
                     style={{ color: "#F5F0E8", fontFamily: "'Playfair Display', serif" }}
                   >
                     {p.title}
                   </h3>
-                  <p className="text-xs mb-2" style={{ color: "oklch(0.73 0.12 75)" }}>{p.sub}</p>
                   <p className="text-sm" style={{ color: "oklch(0.58 0.008 65)", lineHeight: 1.65 }}>{p.desc}</p>
                 </div>
               </div>
@@ -570,7 +528,7 @@ export default function Home() {
             >
               Backtested Results.
               <br />
-              <em style={{ color: "oklch(0.73 0.12 75)" }}>Walk-Forward Validated.</em>
+              <em style={{ color: ORANGE }}>Walk-Forward Validated.</em>
             </h2>
             <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8 }}>
               111 quantitative factors backtested against real historical data (2015–2026).
@@ -582,12 +540,12 @@ export default function Home() {
           <div ref={perfRef} className="overflow-x-auto">
             <table className="w-full text-sm" style={{ borderCollapse: "collapse" }}>
               <thead>
-                <tr style={{ borderBottom: "1px solid rgba(201,168,76,0.3)" }}>
+                <tr style={{ borderBottom: `1px solid ${ORANGE_BORDER}` }}>
                   {["Pair", "Factor", "BTC Return / Year", "Stop Type", "Period"].map((h) => (
                     <th
                       key={h}
                       className="text-left py-3 px-4 text-xs font-semibold tracking-widest uppercase"
-                      style={{ color: "oklch(0.73 0.12 75)" }}
+                      style={{ color: ORANGE }}
                     >
                       {h}
                     </th>
@@ -607,7 +565,7 @@ export default function Home() {
                   >
                     <td className="py-4 px-4 font-medium" style={{ color: "#F5F0E8" }}>{row.coin}</td>
                     <td className="py-4 px-4" style={{ color: "oklch(0.70 0.008 65)" }}>{row.factor}</td>
-                    <td className="py-4 px-4 font-bold tabular-nums" style={{ color: "oklch(0.73 0.12 75)" }}>
+                    <td className="py-4 px-4 font-bold tabular-nums" style={{ color: ORANGE }}>
                       +{row.btcReturn}% BTC/yr
                     </td>
                     <td className="py-4 px-4" style={{ color: "oklch(0.60 0.008 65)" }}>{row.stopType}</td>
@@ -642,12 +600,11 @@ export default function Home() {
       <section id="about-founder" className="py-28 lg:py-36" style={{ background: "oklch(0.10 0.003 285)" }}>
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Image */}
             <div className="relative">
               <div
                 className="absolute -inset-3 opacity-20"
                 style={{
-                  background: "linear-gradient(135deg, oklch(0.73 0.12 75), transparent)",
+                  background: `linear-gradient(135deg, ${ORANGE}, transparent)`,
                   filter: "blur(40px)",
                 }}
               />
@@ -659,7 +616,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Text */}
             <div>
               <p className="section-label mb-5">The Founder</p>
               <h2
@@ -673,7 +629,7 @@ export default function Home() {
               >
                 Matthew Halfacre
               </h2>
-              <p className="text-xs font-medium tracking-widest uppercase mb-6" style={{ color: "oklch(0.73 0.12 75)" }}>
+              <p className="text-xs font-medium tracking-widest uppercase mb-6" style={{ color: ORANGE }}>
                 Founder &amp; CEO · Halfacre Research
               </p>
               <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8, marginBottom: "1.25rem" }}>
@@ -687,10 +643,9 @@ export default function Home() {
                 Bitcoin without leverage, without derivatives, and without guesswork.
               </p>
 
-              {/* Quote */}
               <blockquote
                 className="pl-5 mb-6"
-                style={{ borderLeft: "2px solid oklch(0.73 0.12 75)" }}
+                style={{ borderLeft: `2px solid ${ORANGE}` }}
               >
                 <p
                   style={{
@@ -706,18 +661,13 @@ export default function Home() {
                 </p>
               </blockquote>
 
-              {/* Featured in */}
               <p className="section-label mb-3">As Featured In</p>
               <div className="flex flex-wrap gap-3">
                 {["TechBullion", "Capital Insight Hub", "Wantrepreneur Show", "Bitcoin 2050 Whitepaper"].map((pub) => (
                   <span
                     key={pub}
                     className="text-xs font-medium px-3 py-1.5 tracking-wide"
-                    style={{
-                      background: "rgba(201,168,76,0.08)",
-                      border: "1px solid rgba(201,168,76,0.15)",
-                      color: "oklch(0.73 0.12 75)",
-                    }}
+                    style={{ background: ORANGE_BG, border: `1px solid ${ORANGE_BORDER}`, color: ORANGE }}
                   >
                     {pub}
                   </span>
@@ -729,10 +679,7 @@ export default function Home() {
       </section>
 
       {/* ── SECURITY ─────────────────────────────────────────── */}
-      <section
-        id="security"
-        className="relative py-28 lg:py-36 overflow-hidden"
-      >
+      <section id="security" className="relative py-28 lg:py-36 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${SECURITY_BG})`, opacity: 0.15 }}
@@ -754,7 +701,7 @@ export default function Home() {
             >
               Institutional Infrastructure.
               <br />
-              <em style={{ color: "oklch(0.73 0.12 75)" }}>Client-Controlled Assets.</em>
+              <em style={{ color: ORANGE }}>Client-Controlled Assets.</em>
             </h2>
           </div>
 
@@ -776,15 +723,12 @@ export default function Home() {
                 desc: "You own your SFOX account. Halfacre Research holds trading permissions only. Zero withdrawal rights.",
               },
             ].map((item) => (
-              <div
-                key={item.title}
-                className="card-dark p-7 flex flex-col gap-4"
-              >
+              <div key={item.title} className="card-dark p-7 flex flex-col gap-4">
                 <div
                   className="w-11 h-11 flex items-center justify-center"
-                  style={{ background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.2)" }}
+                  style={{ background: ORANGE_BG, border: `1px solid ${ORANGE_BORDER}` }}
                 >
-                  <span style={{ color: "oklch(0.73 0.12 75)" }}>{item.icon}</span>
+                  <span style={{ color: ORANGE }}>{item.icon}</span>
                 </div>
                 <h3
                   style={{
@@ -823,7 +767,7 @@ export default function Home() {
             >
               Get Bitcoin Intelligence
               <br />
-              <em style={{ color: "oklch(0.73 0.12 75)" }}>Delivered to Your Inbox</em>
+              <em style={{ color: ORANGE }}>Delivered to Your Inbox</em>
             </h2>
             <p style={{ color: "oklch(0.60 0.008 65)", lineHeight: 1.8, marginBottom: "2rem" }}>
               Join 340+ subscribers receiving <strong style={{ color: "#F5F0E8" }}>"The New School"</strong> newsletter.
@@ -841,7 +785,7 @@ export default function Home() {
                   color: "#F5F0E8",
                   outline: "none",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "oklch(0.73 0.12 75)")}
+                onFocus={(e) => (e.target.style.borderColor = ORANGE)}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.12)")}
               />
               <button className="btn-gold shrink-0">Subscribe</button>
@@ -849,11 +793,11 @@ export default function Home() {
             <p className="mt-4 text-xs" style={{ color: "oklch(0.45 0.006 65)" }}>
               Or read the newsletter directly on{" "}
               <a
-                href="https://www.linkedin.com/in/matthewhalfacre/"
+                href="https://www.linkedin.com/in/halfacreresearch/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline"
-                style={{ color: "oklch(0.73 0.12 75)" }}
+                style={{ color: ORANGE }}
               >
                 LinkedIn
               </a>
@@ -880,7 +824,7 @@ export default function Home() {
             >
               Schedule Your
               <br />
-              <em style={{ color: "oklch(0.73 0.12 75)" }}>Consultation</em>
+              <em style={{ color: ORANGE }}>Consultation</em>
             </h2>
             <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8, marginBottom: "2.5rem" }}>
               Minimum investment: $100,000 USD. Qualified investors only. Book a private
@@ -888,10 +832,7 @@ export default function Home() {
               is right for your portfolio.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <a
-                href="mailto:matt@halfacreresearch.tech"
-                className="btn-gold"
-              >
+              <a href="mailto:matt@halfacreresearch.tech" className="btn-gold">
                 Book a Consultation <ArrowRight size={14} />
               </a>
               <a
@@ -906,9 +847,9 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm" style={{ color: "oklch(0.55 0.008 65)" }}>
               <a
                 href="mailto:matt@halfacreresearch.tech"
-                className="hover:text-gold transition-colors"
+                className="transition-colors"
                 style={{ color: "oklch(0.55 0.008 65)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.55 0.008 65)")}
               >
                 matt@halfacreresearch.tech
@@ -918,7 +859,7 @@ export default function Home() {
                 href="tel:+12512280500"
                 className="transition-colors"
                 style={{ color: "oklch(0.55 0.008 65)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.55 0.008 65)")}
               >
                 (251) 228-0500
@@ -929,19 +870,14 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────── */}
-      <footer
-        style={{
-          background: "oklch(0.07 0.003 285)",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+      <footer style={{ background: "oklch(0.07 0.003 285)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="container py-14">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             {/* Brand */}
             <div className="lg:col-span-1">
               <p
                 className="font-bold tracking-widest uppercase text-xs mb-3"
-                style={{ color: "oklch(0.73 0.12 75)", letterSpacing: "0.18em" }}
+                style={{ color: ORANGE, letterSpacing: "0.18em" }}
               >
                 Bitcoin Treasury Codex
               </p>
@@ -951,11 +887,11 @@ export default function Home() {
                 Operated by Halfacre Research.
               </p>
               <a
-                href="https://www.linkedin.com/in/matthewhalfacre/"
+                href="https://www.linkedin.com/in/halfacreresearch/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs font-medium tracking-widest uppercase"
-                style={{ color: "oklch(0.73 0.12 75)" }}
+                style={{ color: ORANGE }}
               >
                 LinkedIn Newsletter →
               </a>
@@ -964,16 +900,23 @@ export default function Home() {
             {/* Navigate */}
             <div>
               <p className="section-label mb-4">Navigate</p>
-              {["Home", "About Matthew", "How It Works", "The Platform", "Performance", "Contact"].map((l) => (
+              {[
+                { label: "Home", anchor: "#" },
+                { label: "About Matthew", anchor: "#about-founder" },
+                { label: "How It Works", anchor: "#how-it-works" },
+                { label: "The Intelligence", anchor: "#platform" },
+                { label: "Performance", anchor: "#performance" },
+                { label: "Contact", anchor: "#contact" },
+              ].map((l) => (
                 <a
-                  key={l}
-                  href="#"
+                  key={l.label}
+                  href={l.anchor}
                   className="block text-xs mb-2.5 transition-colors"
                   style={{ color: "oklch(0.50 0.006 65)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
                   onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
                 >
-                  {l}
+                  {l.label}
                 </a>
               ))}
             </div>
@@ -983,9 +926,8 @@ export default function Home() {
               <p className="section-label mb-4">Resources</p>
               {[
                 { label: "Bitcoin 2050 Whitepaper", href: "#" },
-                { label: "The New School Newsletter", href: "https://www.linkedin.com/in/matthewhalfacre/" },
-                { label: "TechBullion Feature", href: "#" },
-                { label: "Capital Insight Hub", href: "#" },
+                { label: "The New School Newsletter", href: "https://www.linkedin.com/in/halfacreresearch/" },
+                { label: "TechBullion Feature", href: "https://techbullion.com/forging-a-new-financial-paradigm-matthew-halfacres-bitcoin-native-vision/" },
                 { label: "Client Portal", href: "https://client.codexyield.com" },
                 { label: "Investor Pitch Deck", href: "https://pitch.codexyield.com" },
               ].map((l) => (
@@ -996,7 +938,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="block text-xs mb-2.5 transition-colors"
                   style={{ color: "oklch(0.50 0.006 65)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
                   onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
                 >
                   {l.label}
@@ -1009,62 +951,71 @@ export default function Home() {
               <p className="section-label mb-4">Contact</p>
               <a
                 href="mailto:matt@halfacreresearch.tech"
-                className="block text-xs mb-2.5"
+                className="block text-xs mb-2.5 transition-colors"
                 style={{ color: "oklch(0.50 0.006 65)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
               >
                 matt@halfacreresearch.tech
               </a>
               <a
                 href="tel:+12512280500"
-                className="block text-xs mb-2.5"
+                className="block text-xs mb-2.5 transition-colors"
                 style={{ color: "oklch(0.50 0.006 65)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.50 0.006 65)")}
               >
                 (251) 228-0500
               </a>
-              <button
-                className="btn-gold text-xs mt-4"
-                onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
-              >
-                Book a Consultation
-              </button>
+              <p className="text-xs mt-4" style={{ color: "oklch(0.40 0.005 65)" }}>
+                Halfacre Research<br />
+                Qualified Investors Only<br />
+                $100K Minimum
+              </p>
             </div>
           </div>
 
-          <div className="gold-line mb-6" />
-
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <p className="text-xs" style={{ color: "oklch(0.40 0.005 65)" }}>
-              © 2026 Halfacre Research. All rights reserved.
+          {/* Bottom bar */}
+          <div
+            className="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4"
+            style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+          >
+            <p className="text-xs" style={{ color: "oklch(0.35 0.004 65)" }}>
+              © 2026 Halfacre Research. All rights reserved. · Not an offer of securities. For qualified investors only.
             </p>
             <div className="flex gap-5">
-              {["Terms of Service", "Privacy Policy"].map((l) => (
+              <Link href="/terms">
                 <a
-                  key={l}
-                  href="#"
                   className="text-xs transition-colors"
                   style={{ color: "oklch(0.40 0.005 65)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "oklch(0.73 0.12 75)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
                   onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.40 0.005 65)")}
                 >
-                  {l}
+                  Terms of Service
                 </a>
-              ))}
+              </Link>
+              <Link href="/privacy">
+                <a
+                  className="text-xs transition-colors"
+                  style={{ color: "oklch(0.40 0.005 65)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.40 0.005 65)")}
+                >
+                  Privacy Policy
+                </a>
+              </Link>
+              <Link href="/legal">
+                <a
+                  className="text-xs transition-colors"
+                  style={{ color: "oklch(0.40 0.005 65)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = ORANGE)}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "oklch(0.40 0.005 65)")}
+                >
+                  Legal Disclosures
+                </a>
+              </Link>
             </div>
           </div>
-
-          <p className="mt-6 text-xs leading-relaxed" style={{ color: "oklch(0.35 0.004 65)", maxWidth: "700px" }}>
-            <strong style={{ color: "oklch(0.45 0.005 65)" }}>Important Disclosure:</strong>{" "}
-            Bitcoin Treasury Codex is operated by Halfacre Research. Bitcoin and all digital assets
-            traded within this strategy are classified as commodities. Halfacre Research is not a
-            registered investment advisor. Past performance is not indicative of future results.
-            All investments involve risk, including the possible loss of principal. This website does
-            not constitute an offer to sell or a solicitation of an offer to buy any security.
-            For qualified investors only. Minimum investment: $100,000 USD.
-          </p>
         </div>
       </footer>
     </div>

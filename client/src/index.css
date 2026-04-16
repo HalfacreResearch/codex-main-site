@@ -1,7 +1,7 @@
 /* =============================================================
    DESIGN PHILOSOPHY: Dark Luxury — Institutional Bitcoin
    Background: #0A0A0A (near-black)
-   Accent: #C9A84C (muted gold)
+   Accent: #F7931A (Bitcoin orange — exact BTC logo color)
    Text: #F5F0E8 (warm white)
    Cards: #111111 / #161616
    Fonts: Playfair Display (headlines) + Inter (body)
@@ -47,9 +47,10 @@
 
 :root {
   --radius: 0.25rem;
-  --gold: oklch(0.73 0.12 75);
-  --gold-muted: oklch(0.65 0.09 75);
-  --gold-dark: oklch(0.45 0.08 75);
+  /* Bitcoin orange: #F7931A */
+  --gold: oklch(0.72 0.17 55);
+  --gold-muted: oklch(0.64 0.14 55);
+  --gold-dark: oklch(0.44 0.10 55);
 
   /* Dark luxury palette */
   --background: oklch(0.08 0.003 285);
@@ -58,32 +59,32 @@
   --card-foreground: oklch(0.94 0.008 65);
   --popover: oklch(0.11 0.004 285);
   --popover-foreground: oklch(0.94 0.008 65);
-  --primary: oklch(0.73 0.12 75);
+  --primary: oklch(0.72 0.17 55);
   --primary-foreground: oklch(0.08 0.003 285);
   --secondary: oklch(0.14 0.005 285);
   --secondary-foreground: oklch(0.85 0.006 65);
   --muted: oklch(0.16 0.005 285);
   --muted-foreground: oklch(0.60 0.010 65);
-  --accent: oklch(0.73 0.12 75);
+  --accent: oklch(0.72 0.17 55);
   --accent-foreground: oklch(0.08 0.003 285);
   --destructive: oklch(0.65 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.73 0.12 75);
-  --chart-1: oklch(0.73 0.12 75);
-  --chart-2: oklch(0.65 0.09 75);
-  --chart-3: oklch(0.55 0.07 75);
-  --chart-4: oklch(0.45 0.05 75);
-  --chart-5: oklch(0.35 0.04 75);
+  --ring: oklch(0.72 0.17 55);
+  --chart-1: oklch(0.72 0.17 55);
+  --chart-2: oklch(0.64 0.14 55);
+  --chart-3: oklch(0.54 0.11 55);
+  --chart-4: oklch(0.44 0.09 55);
+  --chart-5: oklch(0.34 0.07 55);
   --sidebar: oklch(0.10 0.003 285);
   --sidebar-foreground: oklch(0.94 0.008 65);
-  --sidebar-primary: oklch(0.73 0.12 75);
+  --sidebar-primary: oklch(0.72 0.17 55);
   --sidebar-primary-foreground: oklch(0.08 0.003 285);
   --sidebar-accent: oklch(0.14 0.005 285);
   --sidebar-accent-foreground: oklch(0.94 0.008 65);
   --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.73 0.12 75);
+  --sidebar-ring: oklch(0.72 0.17 55);
 }
 
 @layer base {
@@ -129,15 +130,15 @@
   /* Gold accent line */
   .gold-line {
     height: 1px;
-    background: linear-gradient(90deg, transparent, oklch(0.73 0.12 75), transparent);
+    background: linear-gradient(90deg, transparent, oklch(0.72 0.17 55), transparent);
   }
 
   /* Gold text */
   .text-gold {
-    color: oklch(0.73 0.12 75);
+    color: oklch(0.72 0.17 55);
   }
   .text-gold-muted {
-    color: oklch(0.65 0.09 75);
+    color: oklch(0.64 0.14 55);
   }
 
   /* Section label */
@@ -147,7 +148,7 @@
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: oklch(0.73 0.12 75);
+    color: oklch(0.72 0.17 55);
   }
 
   /* Stat number */
@@ -155,7 +156,7 @@
     font-family: 'Playfair Display', serif;
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 700;
-    color: oklch(0.73 0.12 75);
+    color: oklch(0.72 0.17 55);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
@@ -166,7 +167,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 2rem;
-    background: oklch(0.73 0.12 75);
+    background: oklch(0.72 0.17 55);
     color: oklch(0.08 0.003 285);
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
@@ -177,7 +178,7 @@
     transition: all 0.2s ease;
   }
   .btn-gold:hover {
-    background: oklch(0.80 0.13 75);
+    background: oklch(0.80 0.18 55);
   }
 
   /* CTA button — ghost */
@@ -187,18 +188,18 @@
     gap: 0.5rem;
     padding: 0.75rem 2rem;
     background: transparent;
-    color: oklch(0.73 0.12 75);
+    color: oklch(0.72 0.17 55);
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    border: 1px solid oklch(0.73 0.12 75 / 50%);
+    border: 1px solid oklch(0.72 0.17 55 / 50%);
     transition: all 0.2s ease;
   }
   .btn-ghost-gold:hover {
-    border-color: oklch(0.73 0.12 75);
-    background: oklch(0.73 0.12 75 / 8%);
+    border-color: oklch(0.72 0.17 55);
+    background: oklch(0.72 0.17 55 / 8%);
   }
 
   /* Card dark */
