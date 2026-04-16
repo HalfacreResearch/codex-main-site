@@ -462,7 +462,7 @@ export default function Home() {
               {
                 icon: <BarChart3 size={20} />,
                 title: "111 Quantitative Factors",
-                desc: "Every factor is backtested against real historical data with 1.6% round-trip transaction costs applied. Three trailing stop sizes. Tranche entry logic. Top factors deliver 3.5%+ BTC/year in backtests.",
+                desc: "Every factor is backtested against real historical data with realistic transaction costs applied throughout. Top factors have delivered 3.5%+ BTC/year in walk-forward backtests.",
               },
               {
                 icon: <Database size={20} />,
@@ -531,9 +531,9 @@ export default function Home() {
               <em style={{ color: ORANGE }}>Walk-Forward Validated.</em>
             </h2>
             <p style={{ color: "oklch(0.65 0.008 65)", lineHeight: 1.8 }}>
-              111 quantitative factors backtested against real historical data (2015–2026).
-              Methodology: 1.6% round-trip cost, three trailing stop sizes, tranche entry logic.
-              Top factors by BTC-denominated annual return:
+              111 quantitative factors backtested against real historical data (2015–2026),
+              with realistic transaction costs applied throughout. Results are expressed
+              in BTC-denominated annual return — the only metric that matters. Top factors:
             </p>
           </div>
 
@@ -577,7 +577,7 @@ export default function Home() {
           </div>
 
           <p className="mt-6 text-xs" style={{ color: "oklch(0.42 0.006 65)" }}>
-            Backtested results. Walk-forward validation methodology. 1.6% round-trip cost applied.
+            Backtested results. Walk-forward validation methodology. Realistic transaction costs applied.
             Past performance is not indicative of future results. For qualified investors only.
           </p>
 

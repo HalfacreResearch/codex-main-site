@@ -81,9 +81,8 @@ export default function Legal() {
             hypothetical and for illustrative purposes only. Backtested performance does not represent
             actual trading results and has inherent limitations. Actual results may differ materially
             from backtested results due to market conditions, execution costs, timing, and other factors.
-            The backtesting methodology applies a 1.6% round-trip transaction cost (0.5% entry fee,
-            0.5% exit fee, 0.3% slippage per side) and walk-forward validation across the period
-            2015 to 2026. Past performance, whether actual or simulated, is not indicative of future
+            The backtesting methodology applies realistic transaction costs and walk-forward
+            validation across the period 2015 to 2026. Past performance, whether actual or simulated, is not indicative of future
             results. All investments involve risk, including the possible loss of principal.
           </Section>
 
