@@ -27,7 +27,7 @@ import {
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-hero-bg-eDys29FCnuSoc3MeAVdx47.webp";
 const STRATEGY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-strategy-bg-EApfaQxUnLV4mqEy3KBvqL.webp";
 const SECURITY_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-security-bg-JfextvZ9ocCiU5a6eEATHx.webp";
-const FOUNDER_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/codex-founder-4BnA6camC7FF4rMgcuScSU.webp";
+const FOUNDER_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663096452459/cCFYG5nUXDPykN4ko9KJnH/matt-headshot_e87a748d.png";
 
 // ─── BTC orange token ─────────────────────────────────────────
 const ORANGE = "oklch(0.72 0.17 55)";
@@ -611,8 +611,8 @@ export default function Home() {
               <img
                 src={FOUNDER_IMG}
                 alt="Matthew Halfacre — Founder, Halfacre Research"
-                className="relative w-full max-w-sm mx-auto lg:mx-0 object-cover"
-                style={{ aspectRatio: "1/1", filter: "grayscale(20%)" }}
+                className="relative w-full max-w-xs mx-auto lg:mx-0 object-contain"
+                style={{ maxHeight: "420px" }}
               />
             </div>
 
